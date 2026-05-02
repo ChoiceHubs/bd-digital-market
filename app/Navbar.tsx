@@ -18,7 +18,7 @@ export default function Navbar() {
       <div className="logo">🛍️ MyStore</div>
 
       <div className="nav-links">
-        <Link href="/orders">Orders</Link>
+        
         <Link href="/">Home</Link>
         <Link href="/admin">Admin</Link>
         <Link href="/cart">Cart ({cartCount})</Link>

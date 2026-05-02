@@ -9,17 +9,20 @@ type Props = {
   image: string;
 };
 
+type Store = {
+  addToCart: (item: Props) => void;
+};
+
 export default function ProductCard({ id, name, price, image }: Props) {
-  const addToCart = useStore((state) => state.addToCart);
+  const addToCart = useStore((state: Store) => state.addToCart);
 
   return (
     <div className="border rounded-lg p-4">
-      
       {image.includes("video") ? (
-  <video src={image} className="w-full h-40 object-cover" controls />
-) : (
-  <img src={image} className="w-full h-40 object-cover" />
-)}
+        <video src={image} className="w-full h-40 object-cover" controls />
+      ) : (
+        <img src={image} className="w-full h-40 object-cover" alt={name} />
+      )}
 
       <h2 className="font-bold">{name}</h2>
       <p>GHS {price}</p>
@@ -30,7 +33,6 @@ export default function ProductCard({ id, name, price, image }: Props) {
       >
         Add to Cart
       </button>
-
     </div>
   );
 }
