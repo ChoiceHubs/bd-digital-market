@@ -25,7 +25,7 @@ export default function HomePage() {
     localStorage.setItem("cart", JSON.stringify(updated));
   };
 
-  const filtered = products.filter((p) =>
+  const filtered = products.filter((p: any) =>
     p.name.toLowerCase().includes(search.toLowerCase())
   );
 
@@ -55,7 +55,7 @@ export default function HomePage() {
       <div className="products">
         {filtered.length === 0 && <p>No products available</p>}
 
-        {filtered.map((p) => (
+        {filtered.map((p: any) => (
           <div className="card" key={p.id}>
             <img
               src={p.image}
@@ -77,36 +77,32 @@ export default function HomePage() {
       )}
 
       <div className="footer">
-  <div className="footer-content">
+        <div className="footer-content">
 
-    {/* STORE INFO */}
-    <div>
-      <h3>BD Digital Market</h3>
-      <p>Shop smart. Shop fast.</p>
-      <p>Quality products at affordable prices.</p>
-    </div>
+          <div>
+            <h3>BD Digital Market</h3>
+            <p>Shop smart. Shop fast.</p>
+            <p>Quality products at affordable prices.</p>
+          </div>
 
-    {/* STORE CONTACT */}
-    <div>
-      <h4>Contact Store</h4>
-      <p>WhatsApp:0591000877</p>
-      <p>Location: Ghana</p>
-    </div>
+          <div>
+            <h4>Contact Store</h4>
+            <p>WhatsApp:0591000877</p>
+            <p>Location: Ghana</p>
+          </div>
 
-    {/* 🔥 YOUR ADVERT (IMPORTANT) */}
-    <div className="developer-box">
-      <h4>Need a Website Like This?</h4>
-      <p>This system was designed by <b>Choice</b></p>
-      
-      <p>Contact me: 0546201852</p>
-    </div>
+          <div className="developer-box">
+            <h4>Need a Website Like This?</h4>
+            <p>This system was designed by <b>Choice</b></p>
+            <p>Contact me: 0546201852</p>
+          </div>
 
-  </div>
+        </div>
 
-  <p className="footer-bottom">
-    © 2026 BD Digital Market | Developed by Choice
-  </p>
-</div>
+        <p className="footer-bottom">
+          © 2026 BD Digital Market | Developed by Choice
+        </p>
+      </div>
 
     </div>
   );
