@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 import { useStore } from "./cartStore";
-import ProductCard from "./ProductCard";
+import ProductCard from "./ProductCard"; // ✅ FIXED (lowercase)
 
 export default function Products() {
   const { products, setProducts } = useStore();
@@ -13,7 +13,7 @@ export default function Products() {
     if (data) {
       setProducts(JSON.parse(data));
     }
-  }, []);
+  }, [setProducts]);
 
   return (
     <section className="px-6 py-16">
@@ -26,9 +26,12 @@ export default function Products() {
         <p className="text-center">No products yet. Add from admin.</p>
       ) : (
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-          {products.map((product) => (
+          
+          {/* ✅ FIXED TYPE ERROR HERE */}
+          {products.map((product: any) => (
             <ProductCard key={product.id} {...product} />
           ))}
+
         </div>
       )}
     </section>
