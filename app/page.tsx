@@ -1,5 +1,8 @@
 "use client";
 
+
+import { db } from "./firebase";
+import { collection, getDocs } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 
@@ -10,9 +13,22 @@ export default function HomePage() {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
   useEffect(() => {
-    setProducts(JSON.parse(localStorage.getItem("products") || "[]"));
-    setCart(JSON.parse(localStorage.getItem("cart") || "[]"));
-  }, []);
+  const fetchProducts = async () => {
+    const snapshot = await getDocs(collection(db, "products"));
+
+    const data = snapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+
+    setProducts(data);
+  };
+
+  fetchProducts();
+
+  // KEEP CART FROM LOCAL STORAGE
+  setCart(JSON.parse(localStorage.getItem("cart") || "[]"));
+}, []);
 
   const addToCart = (product: any) => {
     const newItem = {
@@ -26,8 +42,8 @@ export default function HomePage() {
   };
 
   const filtered = products.filter((p: any) =>
-    p.name.toLowerCase().includes(search.toLowerCase())
-  );
+  p?.name?.toLowerCase()?.includes(search.toLowerCase())
+);
 
   return (
     <div>
@@ -55,7 +71,7 @@ export default function HomePage() {
       <div className="products">
         {filtered.length === 0 && <p>No products available</p>}
 
-        {filtered.map((p: any) => (
+        {filtered.map((p) => (
           <div className="card" key={p.id}>
             <img
               src={p.image}
@@ -77,32 +93,36 @@ export default function HomePage() {
       )}
 
       <div className="footer">
-        <div className="footer-content">
+  <div className="footer-content">
 
-          <div>
-            <h3>BD Digital Market</h3>
-            <p>Shop smart. Shop fast.</p>
-            <p>Quality products at affordable prices.</p>
-          </div>
+    {/* STORE INFO */}
+    <div>
+      <h3>BD Digital Market</h3>
+      <p>Shop smart. Shop fast.</p>
+      <p>Quality products at affordable prices.</p>
+    </div>
 
-          <div>
-            <h4>Contact Store</h4>
-            <p>WhatsApp:0591000877</p>
-            <p>Location: Ghana</p>
-          </div>
+    {/* STORE CONTACT */}
+    <div>
+      <h4>Contact Store</h4>
+      <p>WhatsApp:0591000877</p>
+      <p>Location: Ghana</p>
+    </div>
 
-          <div className="developer-box">
-            <h4>Need a Website Like This?</h4>
-            <p>This system was designed by <b>Choice</b></p>
-            <p>Contact me: 0546201852</p>
-          </div>
+    {/*  YOUR ADVERT (IMPORTANT) */}
+    <div className="developer-box">
+      <h4>Need a Website Like This?</h4>
+      <p>This system was designed by <b>Choice</b></p>
+      
+      <p>Contact me: 0546201852</p>
+    </div>
 
-        </div>
+  </div>
 
-        <p className="footer-bottom">
-          © 2026 BD Digital Market | Developed by Choice
-        </p>
-      </div>
+  <p className="footer-bottom">
+    © 2026 BD Digital Market | Developed by Choice
+  </p>
+</div>
 
     </div>
   );
