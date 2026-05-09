@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { db } from "../firebase";
+import { collection, addDoc } from "firebase/firestore";
 
 export default function CartPage() {
   const [cart, setCart] = useState<any[]>([]);
@@ -27,15 +29,14 @@ export default function CartPage() {
     localStorage.setItem("cart", JSON.stringify(updated));
   };
 
-  // PLACE ORDER (WHATSAPP)
-  const placeOrder = () => {
+  // 🔥 PLACE ORDER (NOW SAVES TO FIREBASE)
+  const placeOrder = async () => {
     if (!name || !phone || !location) {
       alert("Fill all details");
       return;
     }
 
     const order = {
-      id: Date.now(),
       items: cart,
       total,
       date: new Date().toLocaleString(),
@@ -43,43 +44,47 @@ export default function CartPage() {
       status: "Pending",
     };
 
-    // SAVE ORDER
-    const existing = JSON.parse(localStorage.getItem("orders") || "[]");
-    const updatedOrders = [...existing, order];
-    localStorage.setItem("orders", JSON.stringify(updatedOrders));
+    try {
+      // ✅ SAVE TO FIREBASE
+      await addDoc(collection(db, "orders"), order);
 
-    // ✅ PROFESSIONAL WHATSAPP MESSAGE
-    const message = `🛒 *NEW ORDER RECEIVED*
+      // ✅ WHATSAPP MESSAGE
+      const message = `🛒 *NEW ORDER RECEIVED*
 
- Name: ${name}
- Phone: ${phone}
- Location: ${location}
+Name: ${name}
+Phone: ${phone}
+Location: ${location}
 
- *Items:*
+*Items:*
 ${cart
   .map((item) => `• ${item.name} - GHS ${item.price}`)
   .join("\n")}
 
- *Total: GHS ${total}*
+*Total: GHS ${total}*
 
- *Payment Details* 
- Please pay to the number below and send screenshot of payment after transfer to me back.
+We are glad to have you as one of our cherished customers. Please make payment to the momo nuber below and send a screenshot of your payment back to us.
 MoMo Number: 233591000877
 Name: BALIK DORCAS.
- Thank you for your order!`;
+Thank you for your order!`;
 
-    const whatsappNumber = "233591000877";
+      const whatsappNumber = "233591000877";
 
-    const url = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(
-      message
-    )}`;
+      const url = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(
+        message
+      )}`;
 
-    // CLEAR CART
-    localStorage.removeItem("cart");
-    setCart([]);
+      // CLEAR CART
+      localStorage.removeItem("cart");
+      setCart([]);
 
-    // REDIRECT TO WHATSAPP
-    window.open(url, "_blank");
+      // OPEN WHATSAPP
+      window.open(url, "_blank");
+
+      alert("Order placed successfully!");
+    } catch (err) {
+      console.error(err);
+      alert("Error placing order");
+    }
   };
 
   return (
@@ -109,7 +114,7 @@ Name: BALIK DORCAS.
       {/* TOTAL */}
       <h2>Total: GHS {total}</h2>
 
-      {/* CUSTOMER FORM */}
+      {/* FORM */}
       <div style={{ marginTop: 20 }}>
         <input
           placeholder="Name"
